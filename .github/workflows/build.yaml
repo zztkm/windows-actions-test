@@ -1,0 +1,32 @@
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - "doc/**"
+      - "**.md"
+
+jobs:
+  build_windows:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        python_version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "${{ matrix.python_version }}"
+          cache: "pip"
+      #- name: Remove Editable Install
+      #  run: (Get-Content -Path "requirements-dev.lock") -notmatch "-e" | Set-Content -Path "requirements-dev.tmp"
+      #  shell: pwsh
+      - run: pip install -r requirements-dev.tmp
