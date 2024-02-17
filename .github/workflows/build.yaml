@@ -8,6 +8,24 @@ on:
       - "**.md"
 
 jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        python_version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
+      - run: echo "$HOME/.rye/shims" >> $GITHUB_PATH
+      - run: rye pin cpython@${{ matrix.python_version }}
+      - run: rye sync -v
   build_windows:
     runs-on: windows-2022
     timeout-minutes: 60
@@ -29,4 +47,6 @@ jobs:
       #- name: Remove Editable Install
       #  run: (Get-Content -Path "requirements-dev.lock") -notmatch "-e" | Set-Content -Path "requirements-dev.tmp"
       #  shell: pwsh
+      - run: pip freeze
       - run: pip install -r requirements-dev.lock
+      - run: pip freeze
