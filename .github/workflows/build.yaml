@@ -44,6 +44,7 @@ jobs:
         with:
           python-version: "${{ matrix.python_version }}"
           cache: "pip"
+      - run: python -m pip freeze
       #- name: Remove Editable Install
       #  run: (Get-Content -Path "requirements-dev.lock") -notmatch "-e" | Set-Content -Path "requirements-dev.tmp"
       #  shell: pwsh
