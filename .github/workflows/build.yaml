@@ -22,10 +22,30 @@ jobs:
           - "3.12"
     steps:
       - uses: actions/checkout@v4
+      - run: pipx --version
       - run: curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
       - run: echo "$HOME/.rye/shims" >> $GITHUB_PATH
       - run: rye pin cpython@${{ matrix.python_version }}
       - run: rye sync -v
+  build_mac:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        python_version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - run: pipx --version
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "${{ matrix.python_version }}"
+          cache: "pip"
   build_windows:
     runs-on: windows-2022
     timeout-minutes: 60
@@ -40,6 +60,7 @@ jobs:
           - "3.12"
     steps:
       - uses: actions/checkout@v4
+      - run: pipx --version
       - uses: actions/setup-python@v5
         with:
           python-version: "${{ matrix.python_version }}"
